@@ -73,7 +73,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="/new">
                             <span data-feather="file"></span>
                             New performance
                         </a>
@@ -176,7 +176,7 @@
                             <td>${performance.path}</td>
                             <td>${performance.distance}</td>
                             <td>${performance.duration}</td>
-                            <td>${performance.distance/performance.duration.seconds}</td>
+                            <td> - </td>
                         </tr>
                     </#list>
                     </tbody>
