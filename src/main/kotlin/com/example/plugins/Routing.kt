@@ -3,12 +3,17 @@ package com.example.plugins
 import io.ktor.routing.*
 import io.ktor.application.*
 import io.ktor.freemarker.*
+import io.ktor.http.content.*
 import io.ktor.response.*
 import io.ktor.sessions.*
 
 fun Application.configureRouting() {
 
     routing {
+        static("assets") {
+            resources("css")
+            resources("js")
+        }
         get("/") {
             if (call.sessions.get("user_session") == null)
                 call.respondRedirect("/login")
