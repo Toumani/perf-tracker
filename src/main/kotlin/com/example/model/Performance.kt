@@ -1,11 +1,11 @@
 package com.example.model
 
-import java.time.Duration
-import java.time.LocalDate
+import org.joda.time.Duration
+import org.joda.time.LocalDate
 
 data class Performance(
     val date: LocalDate,
     val path: String,
     val duration: Duration,
-    val distance: Float, // distance in metres
+    val distance: Int, // distance in metres
 )
