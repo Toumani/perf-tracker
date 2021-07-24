@@ -53,7 +53,7 @@
     <#--  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
     <div class="navbar-nav" style="flex-direction: row">
         <div class="nav-item text-nowrap">
-            <span class="username">${user.id}</span>
+            <span class="username">${user.username}</span>
         </div>
         <div class="nav-item text-nowrap">
             <a class="nav-link px-3" href="/logout">Sign out</a>
@@ -136,7 +136,7 @@
                 <#--            </a>-->
                 <#--          </li>-->
                 <#--        </ul>-->
-                <#--      </div>-->
+            </div>
         </nav>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
@@ -164,124 +164,21 @@
                     <tr>
                         <th scope="col">Date</th>
                         <th scope="col">Path</th>
-                        <th scope="col">Distance</th>
-                        <th scope="col">Time</th>
-                        <th scope="col">Average speed</th>
+                        <th scope="col">Distance (m)</th>
+                        <th scope="col">Duration (s)</th>
+                        <th scope="col">Average speed (m/s)</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>1,001</td>
-                        <td>random</td>
-                        <td>data</td>
-                        <td>placeholder</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,002</td>
-                        <td>placeholder</td>
-                        <td>irrelevant</td>
-                        <td>visual</td>
-                        <td>layout</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>data</td>
-                        <td>rich</td>
-                        <td>dashboard</td>
-                        <td>tabular</td>
-                    </tr>
-                    <tr>
-                        <td>1,003</td>
-                        <td>information</td>
-                        <td>placeholder</td>
-                        <td>illustrative</td>
-                        <td>data</td>
-                    </tr>
-                    <tr>
-                        <td>1,004</td>
-                        <td>text</td>
-                        <td>random</td>
-                        <td>layout</td>
-                        <td>dashboard</td>
-                    </tr>
-                    <tr>
-                        <td>1,005</td>
-                        <td>dashboard</td>
-                        <td>irrelevant</td>
-                        <td>text</td>
-                        <td>placeholder</td>
-                    </tr>
-                    <tr>
-                        <td>1,006</td>
-                        <td>dashboard</td>
-                        <td>illustrative</td>
-                        <td>rich</td>
-                        <td>data</td>
-                    </tr>
-                    <tr>
-                        <td>1,007</td>
-                        <td>placeholder</td>
-                        <td>tabular</td>
-                        <td>information</td>
-                        <td>irrelevant</td>
-                    </tr>
-                    <tr>
-                        <td>1,008</td>
-                        <td>random</td>
-                        <td>data</td>
-                        <td>placeholder</td>
-                        <td>text</td>
-                    </tr>
-                    <tr>
-                        <td>1,009</td>
-                        <td>placeholder</td>
-                        <td>irrelevant</td>
-                        <td>visual</td>
-                        <td>layout</td>
-                    </tr>
-                    <tr>
-                        <td>1,010</td>
-                        <td>data</td>
-                        <td>rich</td>
-                        <td>dashboard</td>
-                        <td>tabular</td>
-                    </tr>
-                    <tr>
-                        <td>1,011</td>
-                        <td>information</td>
-                        <td>placeholder</td>
-                        <td>illustrative</td>
-                        <td>data</td>
-                    </tr>
-                    <tr>
-                        <td>1,012</td>
-                        <td>text</td>
-                        <td>placeholder</td>
-                        <td>layout</td>
-                        <td>dashboard</td>
-                    </tr>
-                    <tr>
-                        <td>1,013</td>
-                        <td>dashboard</td>
-                        <td>irrelevant</td>
-                        <td>text</td>
-                        <td>visual</td>
-                    </tr>
-                    <tr>
-                        <td>1,014</td>
-                        <td>dashboard</td>
-                        <td>illustrative</td>
-                        <td>rich</td>
-                        <td>data</td>
-                    </tr>
-                    <tr>
-                        <td>1,015</td>
-                        <td>random</td>
-                        <td>tabular</td>
-                        <td>information</td>
-                        <td>text</td>
-                    </tr>
+                    <#list performances as performance>
+                        <tr>
+                            <td>${performance.date}</td>
+                            <td>${performance.path}</td>
+                            <td>${performance.distance}</td>
+                            <td>${performance.duration}</td>
+                            <td>${performance.distance/performance.duration.seconds}</td>
+                        </tr>
+                    </#list>
                     </tbody>
                 </table>
             </div>
@@ -298,6 +195,52 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
         integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
         crossorigin="anonymous"></script>
-<script src="/assets/summary.js"></script>
+<script>
+    /* globals Chart:false, feather:false */
+
+    (function () {
+        'use strict'
+
+        feather.replace({ 'aria-hidden': 'true' })
+
+        // Graphs
+        var ctx = document.getElementById('myChart')
+        // eslint-disable-next-line no-unused-vars
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    <#list performances as perf>
+                        '${perf.date}',
+                    </#list>
+                ],
+                datasets: [{
+                    data: [
+                        <#list performances as perf>
+                            '${perf.distance?long?c}',
+                        </#list>
+                    ],
+                    lineTension: 0,
+                    backgroundColor: 'transparent',
+                    borderColor: '#007bff',
+                    borderWidth: 4,
+                    pointBackgroundColor: '#007bff'
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                },
+                legend: {
+                    display: false
+                }
+            }
+        })
+    })()
+</script>
 </body>
 </html>
