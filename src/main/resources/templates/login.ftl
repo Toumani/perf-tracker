@@ -28,7 +28,8 @@
         <div class="mb-3">
             <button type="submit" class="btn btn-primary">Login</button>
         </div>
-        <#if loginFailed>
+
+        <#if (loginFailed?? && loginFailed)>
             <div class="alert alert-danger" role="alert">
                 Failed! Double check your username and password
             </div>

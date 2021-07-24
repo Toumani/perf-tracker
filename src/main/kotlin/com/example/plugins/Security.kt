@@ -25,7 +25,7 @@ fun Application.configureSecurity() {
                 }
             }
             challenge {
-                call.respond(status = HttpStatusCode.Unauthorized, FreeMarkerContent("index.ftl", mapOf("loginFailed" to true),""))
+                call.respondRedirect("/login?failure=true")
             }
         }
     }
@@ -37,11 +37,11 @@ fun Application.configureSecurity() {
             val password = params["password"] ?: return@post call.respond(HttpStatusCode.BadRequest)
 
             call.sessions.set(UserSession(userName, password))
-            call.respondRedirect("/profile")
+            call.respondRedirect("/summary")
         }
         authenticate("auth-session") {
-            get("/profile") {
-                call.respond(FreeMarkerContent("profile.ftl", mapOf("user" to call.sessions.get("user_session")), ""))
+            get("/summary") {
+                call.respond(FreeMarkerContent("summary.ftl", mapOf("user" to call.sessions.get("user_session")), ""))
             }
             get("/logout") {
                 call.sessions.clear<UserSession>()
