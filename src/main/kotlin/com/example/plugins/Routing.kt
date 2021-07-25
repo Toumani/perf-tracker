@@ -14,12 +14,13 @@ import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.sessions.*
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
-import org.joda.time.Duration
+import org.joda.time.LocalDate
 
 fun Application.configureRouting() {
 
@@ -46,18 +47,24 @@ fun Application.configureRouting() {
                     val userEntity = Users.select { Users.name eq user.username }.map {
                         UserEntity(id = it[Users.id])
                     }.first()
-                    performances = (Users innerJoin  Performances).select { Users.id eq Performances.userId and (Users.id eq userEntity.id) }.map {
+                    performances = (Users innerJoin  Performances)
+                        .select { Users.id eq Performances.userId and (Users.id eq userEntity.id) }
+                        .orderBy(Performances.date to SortOrder.ASC).map {
                         Performance(
                             date = it[Performances.date].toLocalDate(),
                             path = it[Performances.path],
-                            duration = Duration.millis(it[Performances.duration]),
+                            duration = it[Performances.duration],
                             distance = it[Performances.distance]
                         )
                     }
                 }
+                val today = LocalDate.now()
                 call.respond(FreeMarkerContent("summary.ftl", mapOf(
                     "user" to user,
-                    "performances" to performances
+                    "performances" to performances,
+                    "weekPerformances" to performances.filter { it.date.weekOfWeekyear == today.weekOfWeekyear },
+                    "monthPerformances" to performances.filter { it.date.monthOfYear == today.monthOfYear },
+                    "yearPerformances" to performances.filter { it.date.year == today.year }
                 ), ""))
             }
             get("/new") {

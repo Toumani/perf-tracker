@@ -6,6 +6,8 @@ import org.joda.time.LocalDate
 data class Performance(
     val date: LocalDate,
     val path: String,
-    val duration: Duration,
+    val duration: Long,
     val distance: Int, // distance in metres
-)
+) {
+    val speed = (distance*1_000).toFloat()/duration.toFloat()*3_600
+}
