@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun main() {
-    embeddedServer(Netty, port = 8080, host = "0.0.0.0") {
+    embeddedServer(Netty, port = if (System.getenv("PORT").isNotEmpty()) { System.getenv("PORT").toInt() } else { 8080 }, host = "0.0.0.0") {
         configureSecurity()
         configureRouting()
         configureTemplating()
