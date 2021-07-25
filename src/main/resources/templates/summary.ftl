@@ -178,18 +178,18 @@
                                 <th scope="col">Date</th>
                                 <th scope="col">Path</th>
                                 <th scope="col">Distance (m)</th>
-                                <th scope="col">Duration (s)</th>
-                                <th scope="col">Average speed (m/s)</th>
+                                <th scope="col">Duration</th>
+                                <th scope="col">Average speed (km/h)</th>
                             </tr>
                             </thead>
                             <tbody>
                             <#list performances as performance>
                                 <tr>
-                                    <td>${performance.date}</td>
+                                    <td>${performance.formattedDate}</td>
                                     <td>${performance.path}</td>
                                     <td>${performance.distance}</td>
-                                    <td>${performance.duration}</td>
-                                    <td> - </td>
+                                    <td>${performance.formattedDuration}</td>
+                                    <td>${performance.speedKmPerHour}</td>
                                 </tr>
                             </#list>
                             </tbody>
@@ -221,30 +221,30 @@
         const weekPerformances = [
             <#list weekPerformances as perf>
             {
-                date: '${perf.date}',
+                date: '${perf.formattedDate}',
                 distance: ${perf.distance?long?c},
-                duration: ${perf.duration?long?c},
-                speed: ${perf.speed?long?c}
+                duration: ${perf.durationSeconds?long?c},
+                speed: ${perf.speedKmPerHour?long?c}
             },
             </#list>
         ]
         const monthPerformances = [
             <#list monthPerformances as perf>
             {
-                date: '${perf.date}',
+                date: '${perf.formattedDate}',
                 distance: ${perf.distance?long?c},
-                duration: ${perf.duration?long?c},
-                speed: ${perf.speed?long?c}
+                duration: ${perf.durationSeconds?long?c},
+                speed: ${perf.speedKmPerHour?long?c}
             },
             </#list>
         ]
         const yearPerformances = [
             <#list yearPerformances as perf>
             {
-                date: '${perf.date}',
+                date: '${perf.formattedDate}',
                 distance: ${perf.distance?long?c},
-                duration: ${perf.duration?long?c},
-                speed: ${perf.speed?long?c}
+                duration: ${perf.durationSeconds?long?c},
+                speed: ${perf.speedKmPerHour?long?c}
             },
             </#list>
         ]
@@ -253,7 +253,7 @@
             data: {
                 period: 'This week',
                 dataentry: null,
-                displayedData: 'Distance',
+                displayedData: 'Speed',
                 labels: weekPerformances.map(it => it.date),
                 dataset: weekPerformances.map(it => it.distance)
             },

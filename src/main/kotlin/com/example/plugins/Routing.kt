@@ -20,6 +20,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import org.joda.time.Duration
 import org.joda.time.LocalDate
 
 fun Application.configureRouting() {
@@ -53,7 +54,7 @@ fun Application.configureRouting() {
                         Performance(
                             date = it[Performances.date].toLocalDate(),
                             path = it[Performances.path],
-                            duration = it[Performances.duration],
+                            duration = Duration.millis(it[Performances.duration]),
                             distance = it[Performances.distance]
                         )
                     }
