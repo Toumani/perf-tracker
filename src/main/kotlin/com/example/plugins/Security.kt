@@ -41,6 +41,10 @@ fun Application.configureSecurity() {
                 call.respondRedirect("/login?failure=true")
             }
         }
+        get("/logout") {
+            call.sessions.clear<User>()
+            call.respondRedirect("/")
+        }
     }
 }
 

@@ -14,6 +14,7 @@ import io.ktor.http.content.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.sessions.*
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -42,7 +43,10 @@ fun Application.configureRouting() {
                 val user = call.sessions.get("user_session") as User
                 lateinit var performances: List<Performance>
                 transaction {
-                    performances = (Users innerJoin  Performances).select { Users.id eq Performances.userId }.map {
+                    val userEntity = Users.select { Users.name eq user.username }.map {
+                        UserEntity(id = it[Users.id])
+                    }.first()
+                    performances = (Users innerJoin  Performances).select { Users.id eq Performances.userId and (Users.id eq userEntity.id) }.map {
                         Performance(
                             date = it[Performances.date].toLocalDate(),
                             path = it[Performances.path],
@@ -72,9 +76,7 @@ fun Application.configureRouting() {
                     transaction {
                         val user = call.sessions.get("user_session") as User
                         val userEntity = Users.select { Users.name eq user.username }.map {
-                            UserEntity(
-                                id = it[Users.id]
-                            )
+                            UserEntity(id = it[Users.id])
                         }.first()
                         Performances.insert {
                             it[date] = DateTime.parse(dateParam) // if date is not well formatted, a bad request response is sent in the catch block
@@ -89,10 +91,6 @@ fun Application.configureRouting() {
                 } catch (e: Exception) {
                     call.respond(HttpStatusCode.BadRequest)
                 }
-            }
-            get("/logout") {
-                call.sessions.clear<User>()
-                call.respondRedirect("/")
             }
         }
     }

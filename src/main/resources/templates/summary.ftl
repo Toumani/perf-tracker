@@ -50,7 +50,7 @@
             aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <#--  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
+    <span class="w-100"></span>
     <div class="navbar-nav" style="flex-direction: row">
         <div class="nav-item text-nowrap">
             <span class="username">${user.username}</span>
